@@ -1,0 +1,42 @@
+﻿@model IEnumerable<CordeiroModel>
+
+@{
+    ViewData["title"] = "Listagem de Cordeiros";
+}
+
+
+<div class="Container">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <h1>Cordeiros</h1>
+         <a class="btn btn-dark mx-2" asp-controller="Cordeiros" asp-action="Cadastrar">Cadastrar um novo cordeiro</a>
+    </div>
+    <table class="table table-dark table-hover">
+        <thead>
+            <tr>
+                <th scope="col">Nome</th>
+                <th scope="col">CPF/CNPJ</th>
+                <th scope="col">RG</th>
+                <th scope="col">Data de Cadastro</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model!= null)
+            {    
+                @foreach(var cordeiro in Model)
+                {                
+                    <tr>
+                        <th scope="row">@cordeiro.Nome</th>
+                        <td>@cordeiro.CPF_CNPJ</td>
+                        <td>@cordeiro.RG</td>
+                        <td>@cordeiro.DataCadastro</td>
+                        <td>
+                            <a asp-controller="Cordeiros" asp-action="Editar" asp-route-id="@cordeiro.Id" class="btn btn-outline-warning btn-sm">Editar</a>
+                            <a asp-controller="Cordeiros" asp-action="Excluir" asp-route-id="@cordeiro.Id" class="btn btn-outline-danger btn-sm">Excluir</a>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

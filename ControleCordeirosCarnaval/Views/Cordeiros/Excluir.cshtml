@@ -1,0 +1,45 @@
+﻿@model CordeiroModel
+@{
+    ViewData["title"] = "Excluir Cordeiro";
+}
+
+<div class="Container bg-dark p-5 rounded-5">
+    <div class="mb-5 text-center">
+        <h1 class="text-light">Edição de Cordeiro</h1>
+
+    </div>
+    <form method="post" asp-controller="Cordeiros" asp-action="Excluir">
+        <input type="hidden" asp-for="Id" />
+        
+        <h2 class="text-light">Tem certeza que deseja excluir o registro abaixo ?</h2>
+        
+        <div class="mb-3">
+            <label for="NameInput" class="form-label text-light">Nome</label>
+            <input type="text" class="form-control" id="NameInput" asp-for="Nome" disabled>
+            <span class="text-danger" asp-validation-for="Nome"></span>
+            <!-- <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div> -->
+        </div>
+
+        <div class="mb-3">
+            <label for="CPF_CNPJInput" class="form-label text-light">CPF/CNPJ</label>
+            <input type="text" class="form-control" id="CPF_CNPJInput" asp-for="CPF_CNPJ" disabled>
+            <span class="text-danger" asp-validation-for="CPF_CNPJ"></span>
+            <!-- <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div> -->
+        </div>
+
+        <div class="mb-3">
+            <label for="RGInput" class="form-label text-light">RG</label>
+            <input type="text" class="form-control" id="RGInput" asp-for="RG" disabled>
+            <!-- <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div> -->
+        </div>
+
+        <button type="submit" class="btn btn-outline-danger" id="Btn-Cadastrar" onclick="CadastrarCordeiro()">Apagar</button>
+        <button type="submit" class="btn btn-outline-secondary" id="Btn-Cadastrar" asp-controller="Cordeiros" asp-action="Index">Voltar</button>
+    </form>
+</div>
+
+<script>
+    function CadastrarCordeiro() {
+        alert('funcionando');
+    }
+</script>

@@ -1,0 +1,42 @@
+﻿@model CordeiroModel
+@{
+    ViewData["title"] = "Cadastrar Cordeiro";
+}
+
+<div class="Container bg-dark p-5 rounded-5">
+    <div class="mb-5 text-center">
+        <h1 class="text-light">Cadastro de Cordeiro</h1>
+
+    </div>
+    <form method="post" asp-controller="Cordeiros" asp-action="Cadastrar">
+
+        <div class="mb-3">
+            <label for="NameInput" class="form-label text-light">Nome</label>
+            <input type="text" class="form-control" id="NameInput" asp-for="Nome">
+            <span  class="text-danger" asp-validation-for="Nome"></span>
+           <!-- <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div> -->
+        </div>
+
+        <div class="mb-3">
+            <label for="CPF_CNPJInput" class="form-label text-light">CPF/CNPJ</label>
+            <input type="text" class="form-control" id="CPF_CNPJInput" asp-for="CPF_CNPJ">
+            <span class="text-danger" asp-validation-for="CPF_CNPJ"></span>
+            <!-- <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div> -->
+        </div>
+        
+        <div class="mb-3">
+            <label for="RGInput" class="form-label text-light">RG</label>
+            <input type="text" class="form-control" id="RGInput" asp-for="RG">
+            <!-- <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div> -->
+        </div>    
+
+        <button type="submit" class="btn btn-outline-secondary" id="Btn-Cadastrar" onclick="CadastrarCordeiro()">Cadastrar</button>
+        <button type="submit" class="btn btn-outline-danger" id="Btn-Cadastrar" asp-controller="Cordeiros" asp-action="Index">Voltar</button>
+    </form>
+</div>
+
+<script>
+    function CadastrarCordeiro() {
+        alert('Insert funcionando');
+    }
+</script>
