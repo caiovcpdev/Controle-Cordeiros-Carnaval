@@ -1,21 +1,38 @@
 ﻿using ControleCordeirosCarnaval.Data;
+using ControleCordeirosCarnaval.HttpClient.Interfaces;
 using ControleCordeirosCarnaval.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Reflection.Metadata.Ecma335;
 
 namespace ControleCordeirosCarnaval.Controllers
 {
     public class CordeirosController : Controller
     {
         readonly private AppDBContext _db;
-        public CordeirosController(AppDBContext db)
+        private readonly IWebApiCordeiroIntegracao _webApiCordeiroIntegracao;
+        public CordeirosController(AppDBContext db, IWebApiCordeiroIntegracao webApiCordeiroIntegracao)
         {
             _db = db;
+            _webApiCordeiroIntegracao = webApiCordeiroIntegracao;
+
         }
-        public IActionResult Index()
+        /*public IActionResult Index()
         {
             IEnumerable<CordeiroModel> cordeiro = _db.cordeiro;
             return View(cordeiro);
-        }
+        }*/
+        [HttpGet]
+        public async Task<ActionResult <CordeiroModel>> Index() 
+        {
+           var responseData = await _webApiCordeiroIntegracao.GetCordeiros();
+
+            if (responseData == null)
+            {
+                return BadRequest();
+            }
+            return Ok(responseData);
+        }   
+
 
         public IActionResult Cadastrar()
         {
