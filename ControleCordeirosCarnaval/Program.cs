@@ -1,24 +1,13 @@
 using ControleCordeirosCarnaval.Data;
-using ControleCordeirosCarnaval.HttpClient;
-using ControleCordeirosCarnaval.HttpClient.Interfaces;
-using ControleCordeirosCarnaval.HttpClient.Refit;
 using Microsoft.EntityFrameworkCore;
-using Refit;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+
+builder.Services.AddHttpClient();
 builder.Services.AddControllersWithViews();
 
-
-// Configurar Refit para IWebApiCordeiroIntegracaoRefit
-builder.Services.AddRefitClient<IWebApiCordeiroIntegracaoRefit>()
-.ConfigureHttpClient(x => {
-    x.BaseAddress = new Uri("https://localhost:7025");
-});
-
-// Adicionar IWebApiCordeiroIntegracao como um serviço
-builder.Services.AddScoped<IWebApiCordeiroIntegracao, WebApiCordeiroIntegracao>();
 
 builder.Services.AddDbContext<AppDBContext>(opt => {
     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));

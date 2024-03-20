@@ -1,7 +1,9 @@
 ﻿using ControleCordeirosCarnaval.Data;
-using ControleCordeirosCarnaval.HttpClient.Interfaces;
 using ControleCordeirosCarnaval.Models;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Net.Http;
 using System.Reflection.Metadata.Ecma335;
 
 namespace ControleCordeirosCarnaval.Controllers
@@ -9,13 +11,13 @@ namespace ControleCordeirosCarnaval.Controllers
     public class CordeirosController : Controller
     {
         readonly private AppDBContext _db;
-
-        private readonly IWebApiCordeiroIntegracao _webApiCordeiroIntegracao;
-        public CordeirosController(AppDBContext db, IWebApiCordeiroIntegracao webApiCordeiroIntegracao)
+   
+        private readonly  HttpClient _httpClient;  
+        public CordeirosController(AppDBContext db, IHttpClientFactory httpClientFactory)
         {
             _db = db;
-            _webApiCordeiroIntegracao = webApiCordeiroIntegracao;
-
+            _httpClient = httpClientFactory.CreateClient();
+            _httpClient.BaseAddress = new Uri("https://localhost:7025");
         }
         /*public IActionResult Index()
         {
@@ -25,14 +27,29 @@ namespace ControleCordeirosCarnaval.Controllers
         [HttpGet]
         public async Task<IActionResult> Index() 
         {
-           var responseData = await _webApiCordeiroIntegracao.GetCordeiro();
+            int cordeiro = 0;
+            HttpResponseMessage response = await _httpClient.GetAsync("/api/cordeiro");
 
-            /*if (responseData == null)
+            if (response.IsSuccessStatusCode)
             {
-                return BadRequest();
-            }*/
-            //return Ok(responseData);
-            return View(responseData);
+                string data = await response.Content.ReadAsStringAsync();
+                var responseObject = JsonConvert.DeserializeObject<JObject>(data);
+
+                if (responseObject != null && responseObject.TryGetValue("value", out JToken valueToken)) 
+                {
+                    cordeiro = valueToken.Value<s>(); // Aqui estamos obtendo o valor "value" do objeto JSON
+                }
+            }
+            ViewData["cordeiro"] = cordeiro;
+            return View();
+            //var responseData = await _webApiCordeiroIntegracao.GetCordeiro();
+
+            // if (responseData == null)
+            // {
+            //     return BadRequest();
+            // }
+            // //return Ok(responseData);
+            // return View(responseData);
         }   
 
 
