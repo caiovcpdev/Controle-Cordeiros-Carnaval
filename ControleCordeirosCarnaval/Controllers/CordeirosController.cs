@@ -9,6 +9,7 @@ namespace ControleCordeirosCarnaval.Controllers
     public class CordeirosController : Controller
     {
         readonly private AppDBContext _db;
+
         private readonly IWebApiCordeiroIntegracao _webApiCordeiroIntegracao;
         public CordeirosController(AppDBContext db, IWebApiCordeiroIntegracao webApiCordeiroIntegracao)
         {
@@ -22,15 +23,16 @@ namespace ControleCordeirosCarnaval.Controllers
             return View(cordeiro);
         }*/
         [HttpGet]
-        public async Task<ActionResult <CordeiroModel>> Index() 
+        public async Task<IActionResult> Index() 
         {
-           var responseData = await _webApiCordeiroIntegracao.GetCordeiros();
+           var responseData = await _webApiCordeiroIntegracao.GetCordeiro();
 
-            if (responseData == null)
+            /*if (responseData == null)
             {
                 return BadRequest();
-            }
-            return Ok(responseData);
+            }*/
+            //return Ok(responseData);
+            return View(responseData);
         }   
 
 

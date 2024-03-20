@@ -7,6 +7,6 @@ namespace ControleCordeirosCarnaval.HttpClient.Refit
     public interface IWebApiCordeiroIntegracaoRefit
     {
         [Get("/api/cordeiro")]
-        Task<ApiResponse<CordeiroModel>> GetCordeiros();
+        Task<CordeiroModel> getCordeiro();
     }
 }

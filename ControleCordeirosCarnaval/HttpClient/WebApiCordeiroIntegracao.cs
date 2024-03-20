@@ -1,24 +1,35 @@
 ﻿using ControleCordeirosCarnaval.HttpClient.Interfaces;
 using ControleCordeirosCarnaval.HttpClient.Refit;
 using ControleCordeirosCarnaval.Models;
+using Newtonsoft.Json;
+using System.Net.Http; // Importe este namespace para acessar a classe HttpContent
 
 namespace ControleCordeirosCarnaval.HttpClient
 {
     public class WebApiCordeiroIntegracao : IWebApiCordeiroIntegracao
     {
-        private readonly IWebApiCordeiroIntegracaoRefit _WebApiCordeiroIntegracaoRefit;
-        public WebApiCordeiroIntegracao(IWebApiCordeiroIntegracaoRefit IWebApiCordeiroIntegracaoRefit)
-        {
-            _WebApiCordeiroIntegracaoRefit = IWebApiCordeiroIntegracaoRefit;
-        }
-        public async Task<CordeiroModel> GetCordeiros()
-        {
-          var responseData  = await _WebApiCordeiroIntegracaoRefit.GetCordeiros();
+        private readonly IWebApiCordeiroIntegracaoRefit _webApiCordeiroIntegracaoRefit;
 
-            if (responseData != null && responseData.IsSuccessStatusCode) 
+        public WebApiCordeiroIntegracao(IWebApiCordeiroIntegracaoRefit webApiCordeiroIntegracaoRefit)
+        {
+            _webApiCordeiroIntegracaoRefit = webApiCordeiroIntegracaoRefit;
+        }
+
+        public async Task<CordeiroModel> GetCordeiro()
+        {
+            var response = await _webApiCordeiroIntegracaoRefit.getCordeiro();
+
+            if (response != null && response.IsSuccessStatusCode)
             {
-                return responseData.Content;   
+                // Obtém o conteúdo da resposta como uma string
+                string content = await response.Content.ReadAsStringAsync();
+
+                // Deserializa a string content para um objeto CordeiroModel
+                CordeiroModel cordeiro = JsonConvert.DeserializeObject<CordeiroModel>(content);
+
+                return cordeiro;
             }
+
             return null;
         }
     }
