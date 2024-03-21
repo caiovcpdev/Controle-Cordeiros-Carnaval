@@ -64,41 +64,23 @@ namespace ControleCordeirosCarnaval.Controllers
                 return NotFound();
             }
         }
-        //public IActionResult Editar(int ? id) 
-        //{
-        //   if(id == null || id == 0)
-        //    {
-        //        return NotFound();  
-        //    }
-
-        //    CordeiroModel cordeiro = _db.cordeiro.FirstOrDefault(x => x.Id == id);
-
-        //   if(cordeiro == null) 
-        //    {
-        //        return NotFound();
-
-        //    }
-
-        //    return View(cordeiro);
-        //}
 
         [HttpGet]
-        public IActionResult Excluir(int? id)
+
+        public async Task<IActionResult> Excluir(int id)
         {
-            if (id == null || id == 0)
+            HttpResponseMessage response = await _httpClient.GetAsync($"/api/cordeiro/{id}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                string data = await response.Content.ReadAsStringAsync();
+                CordeiroModel cordeiro = JsonConvert.DeserializeObject<CordeiroModel>(data);
+                return View(cordeiro);
+            }
+            else
             {
                 return NotFound();
             }
-
-            CordeiroModel cordeiro = _db.cordeiro.FirstOrDefault(x => x.Id == id);
-
-            if (cordeiro == null)
-            {
-                return NotFound();
-
-            }
-
-            return View(cordeiro);
         }
 
         [HttpPost]
@@ -132,43 +114,39 @@ namespace ControleCordeirosCarnaval.Controllers
                 else
                 {
                     ModelState.AddModelError(string.Empty, "Erro ao editar cordeiro. Por favor, tente novamente mais tarde.");
-                    return View(cordeiroAtualizado); // Retorna a view com o objeto cordeiroAtualizado para que o usuário possa corrigir os campos
+                    return View(cordeiroAtualizado);
                 }
             }
             catch (Exception ex)
             {
 
                 ModelState.AddModelError(string.Empty, $"Erro ao editar cordeiro: {ex.Message}");
-                return View(cordeiroAtualizado); // Retorna a view com o objeto cordeiroAtualizado para que o usuário possa corrigir os campos
+                return View(cordeiroAtualizado);
             }
         }
 
-
-
-        //public IActionResult Editar (CordeiroModel cordeiro)
-        //{
-        //    if (ModelState.IsValid) 
-        //    {
-        //        _db.cordeiro.Update(cordeiro);
-        //        _db.SaveChanges();
-
-        //        return RedirectToAction("Index");
-        //    }
-        //    return View(cordeiro);
-        //}
-
         [HttpPost]
-        public IActionResult Excluir (CordeiroModel cordeiro)
+        public async Task<IActionResult> Excluir(int id, CordeiroModel cordeiroAtualizado)
         {
-            if (cordeiro == null )
+            try
             {
-                return NotFound();  
+                HttpResponseMessage response = await _httpClient.DeleteAsync($"/api/cordeiro/{id}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Erro ao excluir cordeiro. Por favor, tente novamente mais tarde.");
+                    return View(cordeiroAtualizado);
+                }
             }
-
-            _db.cordeiro.Remove(cordeiro);
-            _db.SaveChanges();  
-
-            return RedirectToAction("Index");   
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, $"Erro ao excluir cordeiro: {ex.Message}");
+                return View(cordeiroAtualizado);
+            }
         }
     }
 }
