@@ -19,11 +19,7 @@ namespace ControleCordeirosCarnaval.Controllers
             _httpClient = httpClientFactory.CreateClient();
             _httpClient.BaseAddress = new Uri("https://localhost:7025");
         }
-        /*public IActionResult Index()
-        {
-            IEnumerable<CordeiroModel> cordeiro = _db.cordeiro;
-            return View(cordeiro);
-        }*/
+
         [HttpGet]
         public async Task<IActionResult> Index()
         {
@@ -38,11 +34,11 @@ namespace ControleCordeirosCarnaval.Controllers
             }
             else
             {
-                return null;// Trate o erro de alguma forma adequada, como exibindo uma mensagem de erro
+                return null;
             }
 
             ViewData["cordeiros"] = cordeiros;
-            return View();
+            return View(cordeiros);
         }
 
 
@@ -89,17 +85,35 @@ namespace ControleCordeirosCarnaval.Controllers
         }
 
         [HttpPost]
-        public IActionResult Cadastrar(CordeiroModel cordeiro)
+        public async Task<IActionResult> Cadastrar(CordeiroModel novoCordeiro)
         {
-            if (ModelState.IsValid)
-            {
-                _db.cordeiro.Add(cordeiro);
-                _db.SaveChanges();
+            HttpResponseMessage response = await _httpClient.PostAsJsonAsync("/api/cordeiro", novoCordeiro);
 
-                return RedirectToAction("Index");
+            if (response.IsSuccessStatusCode)
+            {
+                // Se a solicitação foi bem-sucedida, você pode querer fazer algo, como redirecionar para outra página ou atualizar a lista de cordeiros
+                return RedirectToAction("Index"); // Exemplo de redirecionamento para a página inicial
             }
-            return View();
+            else
+            {
+                // Se houve algum problema na solicitação, você pode lidar com isso aqui, talvez mostrando uma mensagem de erro para o usuário
+                ModelState.AddModelError(string.Empty, "Erro ao cadastrar cordeiro. Por favor, tente novamente mais tarde.");
+                return View(novoCordeiro); // Retorna a view com o objeto novoCordeiro para que o usuário possa corrigir os campos
+            }
         }
+
+
+        //public IActionResult Cadastrar(CordeiroModel cordeiro)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        _db.cordeiro.Add(cordeiro);
+        //        _db.SaveChanges();
+
+        //        return RedirectToAction("Index");
+        //    }
+        //    return View();
+        //}
 
         [HttpPost]
         public IActionResult Editar (CordeiroModel cordeiro)
