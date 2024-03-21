@@ -42,22 +42,23 @@ namespace ControleCordeirosCarnaval.Controllers
         }
 
 
-
+        [HttpGet]
         public IActionResult Cadastrar()
         {
             return View();
         }
 
+        [HttpGet]
         public IActionResult Editar(int ? id) 
         {
-            if(id == null || id == 0)
+           if(id == null || id == 0)
             {
                 return NotFound();  
             }
 
             CordeiroModel cordeiro = _db.cordeiro.FirstOrDefault(x => x.Id == id);
 
-            if(cordeiro == null) 
+           if(cordeiro == null) 
             {
                 return NotFound();
 
@@ -66,6 +67,7 @@ namespace ControleCordeirosCarnaval.Controllers
             return View(cordeiro);
         }
 
+        [HttpGet]
         public IActionResult Excluir(int? id)
         {
             if (id == null || id == 0)
@@ -91,42 +93,54 @@ namespace ControleCordeirosCarnaval.Controllers
 
             if (response.IsSuccessStatusCode)
             {
-                // Se a solicitação foi bem-sucedida, você pode querer fazer algo, como redirecionar para outra página ou atualizar a lista de cordeiros
-                return RedirectToAction("Index"); // Exemplo de redirecionamento para a página inicial
+                return RedirectToAction("Index"); 
             }
             else
             {
-                // Se houve algum problema na solicitação, você pode lidar com isso aqui, talvez mostrando uma mensagem de erro para o usuário
                 ModelState.AddModelError(string.Empty, "Erro ao cadastrar cordeiro. Por favor, tente novamente mais tarde.");
                 return View(novoCordeiro); // Retorna a view com o objeto novoCordeiro para que o usuário possa corrigir os campos
             }
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Editar(int id, CordeiroModel cordeiroAtualizado)
+        {
+            try
+            {
+                cordeiroAtualizado.Id = id;
+                HttpResponseMessage response = await _httpClient.PutAsJsonAsync("/api/cordeiro", cordeiroAtualizado);
 
-        //public IActionResult Cadastrar(CordeiroModel cordeiro)
+                if (response.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Erro ao editar cordeiro. Por favor, tente novamente mais tarde.");
+                    return View(cordeiroAtualizado); // Retorna a view com o objeto cordeiroAtualizado para que o usuário possa corrigir os campos
+                }
+            }
+            catch (Exception ex)
+            {
+
+                ModelState.AddModelError(string.Empty, $"Erro ao editar cordeiro: {ex.Message}");
+                return View(cordeiroAtualizado); // Retorna a view com o objeto cordeiroAtualizado para que o usuário possa corrigir os campos
+            }
+        }
+
+
+
+        //public IActionResult Editar (CordeiroModel cordeiro)
         //{
-        //    if (ModelState.IsValid)
+        //    if (ModelState.IsValid) 
         //    {
-        //        _db.cordeiro.Add(cordeiro);
+        //        _db.cordeiro.Update(cordeiro);
         //        _db.SaveChanges();
 
         //        return RedirectToAction("Index");
         //    }
-        //    return View();
+        //    return View(cordeiro);
         //}
-
-        [HttpPost]
-        public IActionResult Editar (CordeiroModel cordeiro)
-        {
-            if (ModelState.IsValid) 
-            {
-                _db.cordeiro.Update(cordeiro);
-                _db.SaveChanges();
-
-                return RedirectToAction("Index");
-            }
-            return View(cordeiro);
-        }
 
         [HttpPost]
         public IActionResult Excluir (CordeiroModel cordeiro)
