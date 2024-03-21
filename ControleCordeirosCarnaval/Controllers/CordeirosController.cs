@@ -25,32 +25,26 @@ namespace ControleCordeirosCarnaval.Controllers
             return View(cordeiro);
         }*/
         [HttpGet]
-        public async Task<IActionResult> Index() 
+        public async Task<IActionResult> Index()
         {
-            int cordeiro = 0;
+            IEnumerable<CordeiroModel> cordeiros = null;
+
             HttpResponseMessage response = await _httpClient.GetAsync("/api/cordeiro");
 
             if (response.IsSuccessStatusCode)
             {
                 string data = await response.Content.ReadAsStringAsync();
-                var responseObject = JsonConvert.DeserializeObject<JObject>(data);
-
-                if (responseObject != null && responseObject.TryGetValue("value", out JToken valueToken)) 
-                {
-                    cordeiro = valueToken.Value<s>(); // Aqui estamos obtendo o valor "value" do objeto JSON
-                }
+                cordeiros = JsonConvert.DeserializeObject<IEnumerable<CordeiroModel>>(data);
             }
-            ViewData["cordeiro"] = cordeiro;
-            return View();
-            //var responseData = await _webApiCordeiroIntegracao.GetCordeiro();
+            else
+            {
+                return null;// Trate o erro de alguma forma adequada, como exibindo uma mensagem de erro
+            }
 
-            // if (responseData == null)
-            // {
-            //     return BadRequest();
-            // }
-            // //return Ok(responseData);
-            // return View(responseData);
-        }   
+            ViewData["cordeiros"] = cordeiros;
+            return View();
+        }
+
 
 
         public IActionResult Cadastrar()
