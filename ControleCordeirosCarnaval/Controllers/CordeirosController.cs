@@ -49,23 +49,38 @@ namespace ControleCordeirosCarnaval.Controllers
         }
 
         [HttpGet]
-        public IActionResult Editar(int ? id) 
+        public async Task<IActionResult> Editar(int id)
         {
-           if(id == null || id == 0)
+            HttpResponseMessage response = await _httpClient.GetAsync($"/api/cordeiro/{id}");
+
+            if (response.IsSuccessStatusCode)
             {
-                return NotFound();  
+                string data = await response.Content.ReadAsStringAsync();
+                CordeiroModel cordeiro = JsonConvert.DeserializeObject<CordeiroModel>(data);
+                return View(cordeiro);
             }
-
-            CordeiroModel cordeiro = _db.cordeiro.FirstOrDefault(x => x.Id == id);
-
-           if(cordeiro == null) 
+            else
             {
                 return NotFound();
-
             }
-
-            return View(cordeiro);
         }
+        //public IActionResult Editar(int ? id) 
+        //{
+        //   if(id == null || id == 0)
+        //    {
+        //        return NotFound();  
+        //    }
+
+        //    CordeiroModel cordeiro = _db.cordeiro.FirstOrDefault(x => x.Id == id);
+
+        //   if(cordeiro == null) 
+        //    {
+        //        return NotFound();
+
+        //    }
+
+        //    return View(cordeiro);
+        //}
 
         [HttpGet]
         public IActionResult Excluir(int? id)
